@@ -21,11 +21,15 @@ export function formatToPush(yamlStr: string): PushNotification {
 
   // markdown: 完整内容（严肃风格，无emoji，无分割线）
   const markdown = `**综合分析**  
+  
 ${data.summary}  
 
 **事业**: ${data.career}  
+
 **财运**: ${data.wealth}  
+
 **人际**: ${data.relationship}  
+
 **健康**: ${data.health}  
 
 ${data.advice}  
