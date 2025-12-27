@@ -32,6 +32,9 @@ wrangler secret put BARK_DEVICE_KEY  # Bark 设备密钥
 
 # 命主信息
 wrangler secret put USER_PROFILE     # JSON 格式
+
+# 安全路径前缀（推荐配置为 secret）
+wrangler secret put SAFE_PATH        # 例如 __my_secret__
 ```
 
 ### USER_PROFILE 格式
@@ -50,12 +53,17 @@ wrangler secret put USER_PROFILE     # JSON 格式
 
 ## API 端点
 
+为避免被直接探测，本服务的 HTTP 入口需要带上安全路径前缀：
+
+- 访问格式：`/<SAFE_PATH>/<endpoint>`
+- 不带 `SAFE_PATH` 前缀的请求将返回 **404 且空响应体**
+
 | 端点 | 说明 |
 |------|------|
-| `GET /` | 服务信息 |
-| `GET /health` | 健康检查 |
-| `GET /trigger` | 手动触发推送 |
-| `GET /preview?date=YYYY-MM-DD` | 预览命理数据（不推送） |
+| `GET /<SAFE_PATH>` | 回显请求方法（用于验证安全路径生效） |
+| `GET /<SAFE_PATH>/health` | 健康检查 |
+| `GET /<SAFE_PATH>/trigger` | 手动触发推送 |
+| `GET /<SAFE_PATH>/preview?date=YYYY-MM-DD` | 预览命理数据（不推送） |
 
 ## 定时任务
 
@@ -96,6 +104,7 @@ AI_MODEL=gpt-4o
 BARK_SERVER_URL=https://api.day.app
 BARK_DEVICE_KEY=your_device_key
 USER_PROFILE={"gender":"male","birthDate":"1990-01-01","birthTime":"12:00"}
+SAFE_PATH=__my_secret__
 ```
 
 ## 部署

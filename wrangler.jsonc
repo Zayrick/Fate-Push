@@ -31,6 +31,7 @@
 	 * - BARK_SERVER_URL: Bark 服务器地址 (如 https://api.day.app)
 	 * - BARK_DEVICE_KEY: Bark 设备密钥
 	 * - USER_PROFILE: 命主信息 JSON (如 {"gender":"male","birthDate":"1990-01-01","birthTime":"12:00"})
+	 * - SAFE_PATH: 安全路径前缀 (如 __my_secret__，访问路径变为 /__my_secret__/health)
 	 */
 
 	/**

@@ -13,12 +13,40 @@ interface Env {
   AI_BASE_URL: string // e.g., https://api.openai.com/v1
   AI_MODEL: string // e.g., gpt-4o
 
+  // 安全路径前缀（用于隐藏 Worker 入口，避免被直接探测）
+  // 示例：SAFE_PATH=__my_secret__
+  // 则访问路径变为 /__my_secret__/health 等
+  SAFE_PATH: string
+
   // Bark 配置
   BARK_SERVER_URL: string // e.g., https://api.day.app
   BARK_DEVICE_KEY: string
 
   // 命主配置 (JSON 字符串)
   USER_PROFILE: string // {"gender":"male","birthDate":"1990-01-01","birthTime":"12:00"}
+}
+
+function notFoundEmpty(): Response {
+  // 仅返回状态码，不包含任何内容
+  return new Response(null, { status: 404 })
+}
+
+function normalizeSafeBasePath(value: string | undefined): string | null {
+  const raw = (value ?? '').trim()
+  if (!raw) return null
+  const withLeadingSlash = raw.startsWith('/') ? raw : `/${raw}`
+  // 去掉末尾的 /，保证匹配逻辑一致
+  const normalized = withLeadingSlash.endsWith('/') ? withLeadingSlash.slice(0, -1) : withLeadingSlash
+  // '/' 或空字符串没有任何“安全前缀”意义，直接视为未配置
+  if (!normalized || normalized === '/') return null
+  return normalized
+}
+
+function stripSafeBasePath(pathname: string, safeBasePath: string): string | null {
+  if (pathname === safeBasePath) return '/'
+  const prefix = `${safeBasePath}/`
+  if (!pathname.startsWith(prefix)) return null
+  return pathname.slice(safeBasePath.length) || '/'
 }
 
 function parseUserProfile(json: string): UserProfile {
@@ -110,15 +138,34 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
 
+    const safeBasePath = normalizeSafeBasePath(env.SAFE_PATH)
+    if (!safeBasePath) {
+      // 未配置安全路径时：默认拒绝所有 HTTP 请求，避免误暴露
+      return notFoundEmpty()
+    }
+
+    const pathAfterSafe = stripSafeBasePath(url.pathname, safeBasePath)
+    if (!pathAfterSafe) {
+      // 不带安全路径前缀的直接请求：404 且空内容
+      return notFoundEmpty()
+    }
+
+    // 仅当带安全路径访问根路径时，才回显请求方法
+    if (pathAfterSafe === '/' || pathAfterSafe === '') {
+      return new Response(request.method, {
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      })
+    }
+
     // 健康检查
-    if (url.pathname === '/health') {
+    if (pathAfterSafe === '/health') {
       return new Response(JSON.stringify({ status: 'ok', time: new Date().toISOString() }), {
         headers: { 'Content-Type': 'application/json' },
       })
     }
 
     // 手动触发推送
-    if (url.pathname === '/trigger') {
+    if (pathAfterSafe === '/trigger') {
       const result = await executeDailyFortune(env)
       return new Response(JSON.stringify(result), {
         status: result.success ? 200 : 500,
@@ -127,7 +174,7 @@ export default {
     }
 
     // 预览运势数据（不推送）
-    if (url.pathname === '/preview') {
+    if (pathAfterSafe === '/preview') {
       try {
         const userProfile = parseUserProfile(env.USER_PROFILE)
         const targetDate = url.searchParams.get('date') || getTodayDate()
@@ -148,9 +195,8 @@ export default {
       }
     }
 
-    return new Response('Fate Push Service\n\nEndpoints:\n- /health - 健康检查\n- /trigger - 手动触发推送\n- /preview?date=YYYY-MM-DD - 预览命理数据', {
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    })
+    // 未匹配到任何端点：不暴露信息
+    return notFoundEmpty()
   },
 
   /**
