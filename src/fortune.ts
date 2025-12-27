@@ -23,7 +23,7 @@ function parseTime(timeStr: string): { hour: number; minute: number } {
  * 构建每日运势所需的命理数据
  */
 export function buildDailyFortuneData(params: DailyFortuneParams): FortuneData {
-  const { name, gender, birthDate, birthTime, targetDate } = params
+  const { gender, birthDate, birthTime, targetDate } = params
 
   // 解析出生信息
   const birth = parseDate(birthDate)
@@ -79,7 +79,6 @@ export function buildDailyFortuneData(params: DailyFortuneParams): FortuneData {
 
   return {
     // 命主信息
-    name,
     gender: gender === 'male' ? '男' : '女',
     birthDate,
     birthTime,

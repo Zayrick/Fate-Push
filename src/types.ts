@@ -2,7 +2,6 @@
  * 命主信息配置
  */
 export type UserProfile = {
-  name?: string
   gender: 'male' | 'female'
   birthDate: string // YYYY-MM-DD
   birthTime: string // HH:mm
@@ -20,7 +19,6 @@ export type DailyFortuneParams = UserProfile & {
  */
 export type FortuneData = {
   // 命主信息
-  name?: string
   gender: string
   birthDate: string
   birthTime: string

@@ -38,14 +38,12 @@ wrangler secret put USER_PROFILE     # JSON 格式
 
 ```json
 {
-  "name": "张三",
   "gender": "male",
   "birthDate": "1990-01-01",
   "birthTime": "12:00"
 }
 ```
 
-- `name`: 可选，用于推送标题
 - `gender`: `male` 或 `female`
 - `birthDate`: 出生日期 `YYYY-MM-DD`
 - `birthTime`: 出生时间 `HH:mm`
@@ -97,7 +95,7 @@ AI_BASE_URL=https://api.openai.com/v1
 AI_MODEL=gpt-4o
 BARK_SERVER_URL=https://api.day.app
 BARK_DEVICE_KEY=your_device_key
-USER_PROFILE={"name":"测试","gender":"male","birthDate":"1990-01-01","birthTime":"12:00"}
+USER_PROFILE={"gender":"male","birthDate":"1990-01-01","birthTime":"12:00"}
 ```
 
 ## 部署
@@ -117,7 +115,7 @@ wrangler secret put USER_PROFILE
 
 ## 推送效果示例
 
-**标题**: `张三 · 贵人暗助`
+**标题**: `今日运势·贵人暗助`
 
 **副标题**: `2025-12-28 壬辰 | 运势 6/10`
 

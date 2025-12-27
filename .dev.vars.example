@@ -1,0 +1,12 @@
+# 本文件仅作为示例，请复制为 .dev.vars 并填入你自己的配置
+# 注意：不要把真实密钥提交到仓库
+
+AI_API_KEY=your_api_key
+AI_BASE_URL=https://api.openai.com/v1
+AI_MODEL=gpt-4o
+
+BARK_SERVER_URL=https://api.day.app
+BARK_DEVICE_KEY=your_device_key
+
+# 命主信息
+USER_PROFILE={"gender":"male","birthDate":"1990-01-01","birthTime":"12:00"}

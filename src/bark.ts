@@ -9,25 +9,26 @@ export type BarkConfig = {
 /**
  * 将 AI 输出的 YAML 转换为推送格式
  */
-export function formatToPush(yamlStr: string, name?: string): PushNotification {
+export function formatToPush(yamlStr: string): PushNotification {
   const data = yaml.load(yamlStr) as DailyFortuneYaml
 
   // title: 主题
-  const title = `${name ? name + ' · ' : ''}${data.theme}`
+  // 固定标题前缀
+  const title = `今日运势·${data.theme}`
 
   // subtitle: 日期 + 干支 + 评分
   const subtitle = `${data.date} ${data.ganZhi} | 运势 ${data.luck}/10`
 
   // markdown: 完整内容（严肃风格，无emoji，无分割线）
-  const markdown = `**综合分析**
-${data.summary}
+  const markdown = `**综合分析**  
+${data.summary}  
 
-**事业**: ${data.career}
-**财运**: ${data.wealth}
-**人际**: ${data.relationship}
-**健康**: ${data.health}
+**事业**: ${data.career}  
+**财运**: ${data.wealth}  
+**人际**: ${data.relationship}  
+**健康**: ${data.health}  
 
-**宜忌**: ${data.advice}
+${data.advice}  
 
 幸运色: ${data.luckyColor} | 方位: ${data.luckyDirection} | 数字: ${data.luckyNumber}`
 

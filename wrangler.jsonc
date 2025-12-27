@@ -30,7 +30,7 @@
 	 * - AI_MODEL: AI 模型名称 (如 gpt-4o)
 	 * - BARK_SERVER_URL: Bark 服务器地址 (如 https://api.day.app)
 	 * - BARK_DEVICE_KEY: Bark 设备密钥
-	 * - USER_PROFILE: 命主信息 JSON (如 {"name":"张三","gender":"male","birthDate":"1990-01-01","birthTime":"12:00"})
+	 * - USER_PROFILE: 命主信息 JSON (如 {"gender":"male","birthDate":"1990-01-01","birthTime":"12:00"})
 	 */
 
 	/**

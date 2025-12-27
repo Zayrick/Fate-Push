@@ -83,7 +83,6 @@ export function buildUserPrompt(data: FortuneData): string {
 流日干支: ${data.liuRi}
 
 ## 命主信息
-姓名: ${data.name || '未知'}
 性别: ${data.gender}
 出生: ${data.birthDate} ${data.birthTime}
 当前虚岁: ${data.virtualAge}岁

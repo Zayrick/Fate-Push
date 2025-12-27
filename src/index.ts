@@ -18,7 +18,16 @@ interface Env {
   BARK_DEVICE_KEY: string
 
   // 命主配置 (JSON 字符串)
-  USER_PROFILE: string // {"name":"xxx","gender":"male","birthDate":"1990-01-01","birthTime":"12:00"}
+  USER_PROFILE: string // {"gender":"male","birthDate":"1990-01-01","birthTime":"12:00"}
+}
+
+function parseUserProfile(json: string): UserProfile {
+  const raw = JSON.parse(json) as Partial<Record<string, unknown>>
+  return {
+    gender: (raw.gender as UserProfile['gender']) ?? 'male',
+    birthDate: String(raw.birthDate ?? ''),
+    birthTime: String(raw.birthTime ?? ''),
+  }
 }
 
 /**
@@ -37,12 +46,12 @@ function getTodayDate(): string {
 async function executeDailyFortune(env: Env): Promise<{ success: boolean; message: string }> {
   try {
     // 解析用户配置
-    const userProfile: UserProfile = JSON.parse(env.USER_PROFILE)
+    const userProfile = parseUserProfile(env.USER_PROFILE)
 
     // 获取今天日期
     const targetDate = getTodayDate()
 
-    console.log(`[DailyFortune] 开始计算 ${userProfile.name || '命主'} 的 ${targetDate} 运势`)
+    console.log(`[DailyFortune] 开始计算命主的 ${targetDate} 运势`)
 
     // 1. 计算命理数据
     const fortuneData = buildDailyFortuneData({
@@ -66,7 +75,7 @@ async function executeDailyFortune(env: Env): Promise<{ success: boolean; messag
 
     // 3. 提取 YAML 并转换为推送格式
     const yamlContent = extractYaml(aiResponse)
-    const notification = formatToPush(yamlContent, userProfile.name)
+    const notification = formatToPush(yamlContent)
 
     console.log(`[DailyFortune] AI 分析完成: ${notification.title}`)
 
@@ -120,7 +129,7 @@ export default {
     // 预览运势数据（不推送）
     if (url.pathname === '/preview') {
       try {
-        const userProfile: UserProfile = JSON.parse(env.USER_PROFILE)
+        const userProfile = parseUserProfile(env.USER_PROFILE)
         const targetDate = url.searchParams.get('date') || getTodayDate()
 
         const fortuneData = buildDailyFortuneData({
