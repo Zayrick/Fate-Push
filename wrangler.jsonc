@@ -9,7 +9,30 @@
 	"compatibility_date": "2025-12-25",
 	"observability": {
 		"enabled": true
+	},
+
+	/**
+	 * Cron Triggers - 定时任务
+	 * 每天早上 7:00 (UTC+8 = UTC 23:00 前一天) 推送
+	 * https://developers.cloudflare.com/workers/configuration/cron-triggers/
+	 */
+	"triggers": {
+		"crons": ["0 23 * * *"]
 	}
+
+	/**
+	 * Environment Variables - 环境变量
+	 * 敏感信息请使用 secrets: wrangler secret put <KEY>
+	 * 
+	 * 需要配置的 secrets:
+	 * - AI_API_KEY: AI API 密钥
+	 * - AI_BASE_URL: AI API 基础 URL (如 https://api.openai.com/v1)
+	 * - AI_MODEL: AI 模型名称 (如 gpt-4o)
+	 * - BARK_SERVER_URL: Bark 服务器地址 (如 https://api.day.app)
+	 * - BARK_DEVICE_KEY: Bark 设备密钥
+	 * - USER_PROFILE: 命主信息 JSON (如 {"name":"张三","gender":"male","birthDate":"1990-01-01","birthTime":"12:00"})
+	 */
+
 	/**
 	 * Smart Placement
 	 * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
@@ -21,13 +44,6 @@
 	 * databases, object storage, AI inference, real-time communication and more.
 	 * https://developers.cloudflare.com/workers/runtime-apis/bindings/
 	 */
-	/**
-	 * Environment Variables
-	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
-	 * Note: Use secrets to store sensitive data.
-	 * https://developers.cloudflare.com/workers/configuration/secrets/
-	 */
-	// "vars": {  "MY_VARIABLE": "production_value" }
 	/**
 	 * Static Assets
 	 * https://developers.cloudflare.com/workers/static-assets/binding/
