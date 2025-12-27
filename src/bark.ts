@@ -13,7 +13,7 @@ export function formatToPush(yamlStr: string): PushNotification {
   const data = yaml.load(yamlStr) as DailyFortuneYaml
 
   // title: 主题
-  // 固定标题前缀
+  // 固定前缀，避免在通知标题里暴露/展示姓名
   const title = `今日运势·${data.theme}`
 
   // subtitle: 日期 + 干支 + 评分
@@ -21,15 +21,11 @@ export function formatToPush(yamlStr: string): PushNotification {
 
   // markdown: 完整内容（严肃风格，无emoji，无分割线）
   const markdown = `**综合分析**  
-  
 ${data.summary}  
 
 **事业**: ${data.career}  
-
 **财运**: ${data.wealth}  
-
 **人际**: ${data.relationship}  
-
 **健康**: ${data.health}  
 
 ${data.advice}  
