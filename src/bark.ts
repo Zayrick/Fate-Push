@@ -1,5 +1,4 @@
-import yaml from 'js-yaml'
-import type { BarkRequest, DailyFortuneYaml, PushNotification } from './types'
+import type { BarkRequest, DailyFortuneResult, PushNotification } from './types'
 
 export type BarkConfig = {
   serverUrl: string // e.g., https://api.day.app
@@ -7,10 +6,10 @@ export type BarkConfig = {
 }
 
 /**
- * 将 AI 输出的 YAML 转换为推送格式
+ * 将 AI 输出的 JSON 转换为推送格式
  */
-export function formatToPush(yamlStr: string): PushNotification {
-  const data = yaml.load(yamlStr) as DailyFortuneYaml
+export function formatToPush(jsonStr: string): PushNotification {
+  const data = JSON.parse(jsonStr) as DailyFortuneResult
 
   // title: 主题
   // 固定前缀，避免在通知标题里暴露/展示姓名

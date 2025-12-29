@@ -38,21 +38,23 @@ export const SYSTEM_PROMPT = `你是一位严厉、客观、不留情面的八�
    - 刑：辰辰、酉酉、亥亥、午午、子卯、丑戌
 5. 严格遵循上述规则，避免随意编排。
 
-输出 YAML 结构要求（只输出这些字段，不要输出解释，不要 Markdown）：
+输出 JSON 结构要求（只输出 JSON 对象，不要输出解释，不要 Markdown）：
 
-date: "2025-12-28"
-ganZhi: "壬辰"
-luck: 7
-theme: "财运亨通"
-summary: "今日偏财星临门，适合投资理财、商业谈判。地支子水生助日主，精力充沛。注意午后有口舌是非，宜低调。"
-career: "工作顺利，贵人相助，适合推进重要项目"
-wealth: "偏财运佳，可小额投机，忌大额借贷"
-relationship: "人际和谐，利于社交，桃花运一般"
-health: "精神饱满，注意肾脏，忌熬夜"
-advice: "宜：签约、投资、社交、出行。忌：争执、熬夜、动土。"
-luckyColor: "蓝色"
-luckyDirection: "北方"
-luckyNumber: 1
+{
+  "date": "2025-12-28",
+  "ganZhi": "壬辰",
+  "luck": 7,
+  "theme": "财运亨通",
+  "summary": "今日偏财星临门，适合投资理财、商业谈判。地支子水生助日主，精力充沛。注意午后有口舌是非，宜低调。",
+  "career": "工作顺利，贵人相助，适合推进重要项目",
+  "wealth": "偏财运佳，可小额投机，忌大额借贷",
+  "relationship": "人际和谐，利于社交，桃花运一般",
+  "health": "精神饱满，注意肾脏，忌熬夜",
+  "advice": "宜：签约、投资、社交、出行。忌：争执、熬夜、动土。",
+  "luckyColor": "蓝色",
+  "luckyDirection": "北方",
+  "luckyNumber": 1
+}
 
 字段约束 - 必须严格遵守:
 - date: 字符串，阳历日期 YYYY-MM-DD 格式
@@ -67,8 +69,8 @@ luckyNumber: 1
 - luckyNumber: 数字类型，范围 1-9，根据五行推荐
 
 重要:
-1. 所有文本字段必须使用双引号，禁止多行字符串。
-2. 输出必须是纯 YAML，不要任何 Markdown 标记或解释。
+1. 所有字符串字段必须使用双引号。
+2. 输出必须是纯 JSON 对象，不要任何 Markdown 标记（如 \`\`\`json）或额外解释。
 3. 评分必须客观，不能为了讨好用户而虚高。`
 
 /**
@@ -102,5 +104,5 @@ export function buildUserPrompt(data: FortuneData): string {
 流日干: ${data.dayGan}
 流日支: ${data.dayZhi}
 
-请严格按照系统提示词格式输出今日运势 YAML。`
+请严格按照系统提示词格式输出今日运势 JSON。`
 }

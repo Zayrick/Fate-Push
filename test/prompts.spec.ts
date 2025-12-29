@@ -59,7 +59,7 @@ describe('buildUserPrompt', () => {
 流日干: 壬
 流日支: 辰
 
-请严格按照系统提示词格式输出今日运势 YAML。`
+请严格按照系统提示词格式输出今日运势 JSON。`
 
     expect(prompt).toBe(expected)
   })

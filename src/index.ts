@@ -1,6 +1,6 @@
 import { buildDailyFortuneData } from './fortune'
 import { SYSTEM_PROMPT, buildUserPrompt } from './prompts'
-import { chatCompletion, extractYaml, type AIConfig } from './ai'
+import { chatCompletion, extractJson, type AIConfig } from './ai'
 import { formatToPush, sendBarkNotification, type BarkConfig } from './bark'
 import type { UserProfile } from './types'
 
@@ -116,9 +116,9 @@ async function executeDailyFortune(env: Env): Promise<{ success: boolean; messag
       { role: 'user', content: buildUserPrompt(fortuneData) },
     ])
 
-    // 3. 提取 YAML 并转换为推送格式
-    const yamlContent = extractYaml(aiResponse)
-    const notification = formatToPush(yamlContent)
+    // 3. 提取 JSON 并转换为推送格式
+    const jsonContent = extractJson(aiResponse)
+    const notification = formatToPush(jsonContent)
 
     console.log(`[DailyFortune] AI 分析完成: ${notification.title}`)
 

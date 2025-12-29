@@ -49,9 +49,9 @@ export type FortuneData = {
 }
 
 /**
- * AI 输出的 YAML 结构
+ * AI 输出的 JSON 结构
  */
-export type DailyFortuneYaml = {
+export type DailyFortuneResult = {
   date: string
   ganZhi: string
   luck: number

@@ -47,18 +47,18 @@ export async function chatCompletion(
 }
 
 /**
- * 从 AI 响应中提取 YAML 内容
+ * 从 AI 响应中提取 JSON 内容
  * 处理可能的 markdown 代码块包裹
  */
-export function extractYaml(content: string): string {
+export function extractJson(content: string): string {
   // 移除可能的 markdown 代码块
-  let yaml = content.trim()
+  let json = content.trim()
 
-  // 处理 ```yaml ... ``` 格式
-  const yamlBlockMatch = yaml.match(/```(?:yaml|yml)?\s*([\s\S]*?)```/)
-  if (yamlBlockMatch) {
-    yaml = yamlBlockMatch[1].trim()
+  // 处理 ```json ... ``` 格式
+  const jsonBlockMatch = json.match(/```(?:json)?\s*([\s\S]*?)```/)
+  if (jsonBlockMatch) {
+    json = jsonBlockMatch[1].trim()
   }
 
-  return yaml
+  return json
 }
