@@ -58,6 +58,21 @@ function parseUserProfile(json: string): UserProfile {
   }
 }
 
+function isValidYmd(dateStr: string): boolean {
+  // Fast path: format check
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false
+  const [y, m, d] = dateStr.split('-').map((v) => Number(v))
+  if (!Number.isInteger(y) || !Number.isInteger(m) || !Number.isInteger(d)) return false
+  if (m < 1 || m > 12) return false
+  if (d < 1 || d > 31) return false
+
+  // Real date check (handles leap years, month lengths)
+  const dt = new Date(`${dateStr}T00:00:00.000Z`)
+  if (Number.isNaN(dt.getTime())) return false
+  const iso = dt.toISOString().slice(0, 10)
+  return iso === dateStr
+}
+
 /**
  * 获取今天的日期 (UTC+8)
  */
@@ -187,6 +202,58 @@ export default {
         return new Response(JSON.stringify(fortuneData, null, 2), {
           headers: { 'Content-Type': 'application/json' },
         })
+      } catch (error) {
+        return new Response(JSON.stringify({ error: String(error) }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+    }
+
+    // 获取指定日期的提示词（system + user）
+    // 支持：
+    // - /prompt?date=YYYY-MM-DD
+    // - /prompt/YYYY-MM-DD
+    if (pathAfterSafe === '/prompt' || pathAfterSafe.startsWith('/prompt/')) {
+      try {
+        const userProfile = parseUserProfile(env.USER_PROFILE)
+
+        let targetDate = url.searchParams.get('date') || ''
+        if (!targetDate && pathAfterSafe.startsWith('/prompt/')) {
+          targetDate = decodeURIComponent(pathAfterSafe.slice('/prompt/'.length))
+        }
+        if (!targetDate) {
+          return new Response(JSON.stringify({ error: 'Missing date. Use ?date=YYYY-MM-DD or /prompt/YYYY-MM-DD' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
+        if (!isValidYmd(targetDate)) {
+          return new Response(JSON.stringify({ error: 'Invalid date. Expected YYYY-MM-DD' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' },
+          })
+        }
+
+        const fortuneData = buildDailyFortuneData({
+          ...userProfile,
+          targetDate,
+        })
+
+        return new Response(
+          JSON.stringify(
+            {
+              date: targetDate,
+              systemPrompt: SYSTEM_PROMPT,
+              userPrompt: buildUserPrompt(fortuneData),
+            },
+            null,
+            2
+          ),
+          {
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
       } catch (error) {
         return new Response(JSON.stringify({ error: String(error) }), {
           status: 500,
